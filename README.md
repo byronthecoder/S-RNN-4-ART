@@ -1,5 +1,5 @@
 # S-RNN-4-ART
- A neural network designed to detect and mesure phonetic convergence and speech imitation.
+ A neural network designed to detect and measure phonetic convergence and speech imitation.
 
 
 This code repository is a demo of the Siamese RNN model described in the paper:
@@ -8,7 +8,7 @@ This code repository is a demo of the Siamese RNN model described in the paper:
     
     Zheng Yuan, Aldo Pastore, Dorina de Jong, Hao Xu, Luciano Fadiga and Alessandro D’Ausilio
 
-    (preceding the publication Interspeech 2023)
+    (preceding the publication InterSpeech 2023)
 
 
 The folder structure is as follows:
@@ -27,7 +27,7 @@ The folder structure is as follows:
     - models:
         - FR: the best model trained solely on the French dataset.
         - ITA: the best model trained solely on the Italian dataset.
-        - FR_ITA: the best model trained on the French and Italian dataset.
+        - FR_ITA: the best model trained on the French and Italian datasets.
 
     - results: A folder for saving the results of experiments. Contains one test demo.
 
