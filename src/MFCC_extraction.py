@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Author: Zheng Yuan, Aldo Pastore
+# Author: Aldo Pastore, Zheng Yuan
 # Date created: 15/11/2021
 # Date last modified: 02/06/2023
 # Python Version: 3.9.13
