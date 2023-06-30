@@ -2,7 +2,8 @@
  A neural network designed to detect and measure phonetic convergence and speech imitation.
 
 
-This code repository is a demo of the Siamese RNN model described in the paper:
+This code repository is a demo of the Siamese RNN model described in the [paper](https://doi.org/10.48550/arXiv.2306.05088):
+
 
     "The ART of Conversation: Measuring Phonetic Convergence and Deliberate Imitation in L2-Speech with a Siamese RNN"
     
