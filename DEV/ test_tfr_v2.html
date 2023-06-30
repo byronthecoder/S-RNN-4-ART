@@ -1,0 +1,115 @@
+<html>
+<head>
+  <title>Speaker verification with TensorFlow.js</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+</head>
+<body>
+  <h1>Speaker verification with TensorFlow.js</h1>
+  <button id="predict">Predict</button>
+  <p id="score"></p>
+  <p id="label"></p>
+
+    <script>
+        // Define a global variable for the model
+        let model;
+
+
+        // Define an async function that loads the model and adds the event listener
+        async function init() {
+            try {
+                // Load the model
+                model = await tf.loadGraphModel('model.json');
+                // Verify that the model is loaded correctly
+                if (!model) {
+                    throw new Error("Failed to load the model");
+                }
+                // Add an event listener to the button that calls the predict function when clicked
+                document.getElementById("predict").addEventListener("click", predict);
+            } catch (error) {
+                console.error("An error occurred while loading the model:", error);
+            }
+        }
+
+        // Call the init function when the page loads
+        window.onload = init;
+
+        async function predict() {
+          try {
+            const response = await fetch('N3603_s03sent01solo_s04sent04solo.json');
+            const data = await response.json();
+
+            const feat1_length = data.feat1_length;
+            const feat2_length = data.feat2_length;
+            const audio1_feat = data.audio1_feat;
+            const audio2_feat = data.audio2_feat;
+            const labels = data.labels;
+
+            if (!audio1_feat) {
+              throw new Error("audio1_feat is not defined");
+            }
+
+            // console.log("The feature vectors are: " + audio1_feat + " and " + audio2_feat);
+            // console.log("The label is: " + labels);
+
+            // console.log("The feature vectors' type is: " + typeof(audio1_feat));
+            // console.log("The feature vectors' shape is: " + audio1_feat.length);
+
+            const input1 = tf.tensor(audio1_feat).reshape([-1, feat1_length, 39]);
+            const input2 = tf.tensor(audio2_feat).reshape([-1, feat2_length, 39]);
+
+            // // Concatenate the input tensors along the first axis
+            // const concatenated = tf.concat([input1, input2], /*axis=*/0);
+
+            // // Pad the tensors to match the model's expected input shape
+            // const padding = [[0, 0], [0, 1560 - feat1_length], [0, 0]];
+            // const paddedInput1 = input1.pad(padding);
+            // const paddedInput2 = input2.pad(padding);
+
+            // console.log(model.inputs[0].name);
+            // console.log(model.inputs[1].name);
+
+            console.log('Inputs:', model.inputs);
+            console.log('Outputs:', model.outputs);
+
+            // Run the model on the feature vectors
+            // const output = await model.executeAsync({
+            //   "input_1": paddedInput1,
+            //   "input_2": paddedInput2
+            //   // Identity: [paddedInput1, paddedInput2]
+            // });
+
+            // const output = await model.predict([paddedInput1, paddedInput2]);
+            // const output = await model.predict([input1, input2]);
+            // const output = await model.predict(concatenated);
+
+            const output = await model.predict({
+              'StatefulPartitionedCall/siamese_model/bidirectional/backward_rnn/TensorArrayV2Stack_1/TensorListStack': [input1, input2],
+              'StatefulPartitionedCall/siamese_model/bidirectional/forward_rnn/TensorArrayV2Stack_1/TensorListStack': [input1, input2],
+              'StatefulPartitionedCall/siamese_model/bidirectional/backward_rnn/TensorArrayV2Stack/TensorListStack': [input1, input2],
+              'StatefulPartitionedCall/siamese_model/bidirectional/forward_rnn/TensorArrayV2Stack/TensorListStack': [input1, input2]  
+            });
+            // const output = await model.executeAsync([input1, input2]);
+            // const output = model.execute({
+            //   Identity: [paddedInput1, paddedInput2]});
+
+            // Print the output tensor
+            tf.print(output);
+
+            // Get the cosine similarity score from the output
+            const score = tf.squeeze(output).dataSync()[0];
+
+            // Print the score
+            // tf.print(score);
+            console.log("The cosine similarity score is: " + score);
+
+            // Display the score and the label on the webpage
+            document.getElementById("score").innerHTML = "The cosine similarity score is: " + score;
+            document.getElementById("label").innerHTML = "The label is: " + labels;
+          } catch (error) {
+            console.error("An error occurred while fetching the data:", error);
+          }
+        }
+
+    </script>
+</body>
+</html>
